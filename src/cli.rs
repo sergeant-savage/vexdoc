@@ -2,10 +2,10 @@ use std::path::PathBuf;
 
 use argh::FromArgs;
 
-// Command line argument parsing using argh
+// argh does a lot of the heavy lifting through this FromArgs macro based code
 
 #[derive(FromArgs, Debug)]
-/// VexDoc - A fast, simple documentation generator for any programming language
+/// A utility that allows for the generation of printable codebase documenation
 pub struct VexDocArgs {
     #[argh(subcommand)]
     pub subcommands: VexDocSubcommands,
@@ -13,33 +13,27 @@ pub struct VexDocArgs {
 
 #[derive(FromArgs, Debug)]
 #[argh(subcommand)]
-/// Available VexDoc commands
 pub enum VexDocSubcommands {
     Init(InitArgs),
     Generate(GenArgs),
 }
 
 #[derive(FromArgs, Debug)]
-/// Initialize a new VexDoc project
+/// Generates a config file for VexDoc
 #[argh(subcommand, name = "init")]
 pub struct InitArgs {
     #[argh(option, default = "\".\".into()")]
-    /// directory where the config file should be created (defaults to current directory)
+    /// which directory to generate the config file in, defaulting to the current working directory
     pub dir: PathBuf,
-    // TODO: Add overwrite flag
+    // TODO: Add overwrite flag to force a new config
 }
 
 #[derive(FromArgs, Debug)]
-/// Generate HTML documentation from your source files
+/// Generates documentation from codebase, defaulting to all files matching the extensions in the
+/// configuration file
 #[argh(subcommand, name = "generate")]
 pub struct GenArgs {
     #[argh(option)]
-    /// specific files to process (if not provided, processes all matching files)
+    /// optionally list the specific files you want to generate documentation for
     pub files: Vec<PathBuf>,
-    #[argh(switch, short = 'v')]
-    /// show detailed progress information for each file
-    pub verbose: bool,
-    #[argh(switch, short = 'q')]
-    /// suppress progress bars and notices (useful for scripts)
-    pub quiet: bool,
 }
